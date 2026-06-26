@@ -1,0 +1,15 @@
+{
+  "company": "Example Co",
+  "role": "Senior Front End Developer",
+  "fitScore": 82,
+  "verdict": "Strong React and AI-tooling match; light on Webflow and Shopify.",
+  "strengths": [
+    "Built and shipped a full React + Tailwind app (Kindred Paws)",
+    "Created a company-wide Claude automation toolkit, strong prompt engineering"
+  ],
+  "gaps": [
+    "No production Webflow or Shopify experience yet",
+    "GSAP / Framer Motion not on the resume"
+  ],
+  "tailoredIntro": "A 3 to 4 sentence cover-letter opener written in the candidate's voice, specific and confident, no cliches and no em dashes."
+}

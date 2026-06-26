@@ -1,0 +1,128 @@
+{
+  "name": "Job-Hunt Copilot",
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Job-Hunt Copilot",
+        "formDescription": "Paste a job posting to score the fit and draft a tailored intro.",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "Job posting", "fieldType": "textarea", "requiredField": true },
+            { "fieldLabel": "Job URL", "fieldType": "text", "requiredField": false }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1111111-1111-4111-8111-111111111111",
+      "name": "On form submission",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [0, 0],
+      "webhookId": "job-hunt-copilot-001"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "f1", "name": "jobText", "value": "={{ $json['Job posting'] }}", "type": "string" },
+            { "id": "f2", "name": "jobUrl", "value": "={{ $json['Job URL'] }}", "type": "string" },
+            { "id": "f3", "name": "resume", "value": "Marikaimu Chris Ardona. Senior Front End Developer, about 10 years of experience. Based in Bulacan, Philippines. Open to senior front-end roles, remote preferred.\n\nCurrent role: Complete Business Online (Australian digital agency), Mar 2023 to present, promoted to Senior in Nov 2025. Lead front-end developer on client web apps built on the Insites instance-admin platform (CMS, e-commerce, CRM) using Liquid, JavaScript, Vue, CSS, and GraphQL. Led the front end of the Nationally Coordinated Criminal History Checks platform: Stripe payments, a points-based ID and selfie verification flow, integrating AWS Rekognition and NSS submission APIs, plus complex name-validation logic. Led the Australian British Chamber of Commerce events platform with Make.com automation syncing Xero and SendGrid and Slack error alerts. Led the Real Estate Institute of Australia build, the company's first Stripe subscription-webhook implementation. Built a company-wide AI automation toolkit on Claude that cut the PR and deployment workflow from about 30 minutes to about 5, used daily by most of the team. Go-to developer for hard-to-reproduce production issues; mentors colleagues and sets team standards.\n\nEarlier: Coredata Research Inc (2018 to 2023), LimeSurvey customisation in JavaScript and WordPress maintenance across AU, EU, and US. QQFrance Digital Solutions (2016 to 2018), template websites in HTML, CSS, JavaScript, Bootstrap, and AngularJS.\n\nPersonal project: Kindred Paws, a full-stack veterinary clinic management app built solo with React, Vite, Tailwind CSS, and Supabase (PostgreSQL, Auth, Row Level Security). Live demo and open-source repo.\n\nSkills: JavaScript, HTML5, CSS3, Liquid, TypeScript (working knowledge). Vue.js, React, Tailwind CSS, Bootstrap. GraphQL, REST integrations, Webhooks. Supabase, PostgreSQL, Auth and Row Level Security. Stripe, Make.com, SendGrid, Xero. Git and GitHub, Vite, Figma, Cursor AI, Claude AI. BSc Computer Science, STI College Balagtas, 2015.", "type": "string" }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "a2222222-2222-4222-8222-222222222222",
+      "name": "Prepare inputs",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a sharp, honest career assistant helping a senior front-end developer decide whether to apply for a job and giving him a head start on the application.\n\nYou are given the CANDIDATE RESUME and a JOB POSTING.\n\nStep 1. Read the posting closely. Identify its core requirements, its tech stack, and the 3 to 5 things this employer clearly cares about most, including the tools they name and the tone of the post.\n\nStep 2. Score the real fit from 0 to 100. Be honest and strict. A high score requires direct overlap with what THIS job asks for. Being senior or impressive in unrelated areas does not raise the score. A stack mismatch, missing key tools, or being clearly overqualified should lower it. State the main reason in verdict.\n\nStep 3. Pick strengths that DIRECTLY match this job's stated needs and stack, not the most senior-sounding items on the resume. If the job names specific frameworks, tools, or ways of working (for example React, Tailwind, AI tools, prompt engineering, design), prioritise the candidate's experience with those exact things, and ignore unrelated client work even if it sounds impressive.\n\nWrite the tailoredIntro:\n- 3 to 4 sentences, first person, in the candidate's own voice.\n- Open with the single most relevant thing for THIS job, something concrete.\n- Lead with the skills, tools, and projects that match the posting. If the job centres on a framework, AI tooling, or design, those come first. Do not open with unrelated client work.\n- Name a specific project or measurable result when it fits the job.\n- No cliches. Never use \"I am writing to express\", \"I am excited\", \"passionate\", \"leverage\", \"robust\", or \"perfect fit\".\n- No em dashes. Use plain punctuation only.\n\nCANDIDATE RESUME:\n{{ $json.resume }}\n\nJOB POSTING:\n{{ $json.jobText }}",
+        "hasOutputParser": true
+      },
+      "id": "a3333333-3333-4333-8333-333333333333",
+      "name": "Analyse with Gemini",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "a4444444-4444-4444-8444-444444444444",
+      "name": "Gemini 2.0 Flash",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [400, 220]
+    },
+    {
+      "parameters": {
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n  \"company\": \"Example Co\",\n  \"role\": \"Senior Front End Developer\",\n  \"fitScore\": 82,\n  \"verdict\": \"Strong React and AI-tooling match, light on Webflow.\",\n  \"strengths\": [\"Built and shipped a full React and Tailwind app\", \"Company-wide Claude automation toolkit\"],\n  \"gaps\": [\"No production Webflow or Shopify yet\"],\n  \"tailoredIntro\": \"A 3 to 4 sentence opener in the candidate's voice.\"\n}"
+      },
+      "id": "a5555555-5555-4555-8555-555555555555",
+      "name": "Structured Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [580, 220]
+    },
+    {
+      "parameters": {
+        "fromEmail": "you@example.com",
+        "toEmail": "you@example.com",
+        "subject": "=Job fit {{ $json.fitScore }}/100: {{ $json.role }} at {{ $json.company }}",
+        "emailFormat": "html",
+        "html": "=<h2>{{ $json.role }} at {{ $json.company }}</h2><p><strong>Fit: {{ $json.fitScore }}/100.</strong> {{ $json.verdict }}</p><h3>Why it fits</h3><ul>{{ $json.strengths.map(s => '<li>' + s + '</li>').join('') }}</ul><h3>Gaps to watch</h3><ul>{{ $json.gaps.map(g => '<li>' + g + '</li>').join('') }}</ul><h3>Draft intro</h3><p>{{ $json.tailoredIntro.replace(/\\n/g, '<br>') }}</p>",
+        "options": {}
+      },
+      "id": "a6666666-6666-4666-8666-666666666666",
+      "name": "Email result",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [720, -120],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "=Fit: {{ $json.fitScore }}/100",
+        "completionMessage": "={{ $json.verdict }}\n\n{{ $json.tailoredIntro }}",
+        "options": {}
+      },
+      "id": "a7777777-7777-4777-8777-777777777777",
+      "name": "Show result",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [720, 100]
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [[{ "node": "Prepare inputs", "type": "main", "index": 0 }]]
+    },
+    "Prepare inputs": {
+      "main": [[{ "node": "Analyse with Gemini", "type": "main", "index": 0 }]]
+    },
+    "Analyse with Gemini": {
+      "main": [[
+        { "node": "Show result", "type": "main", "index": 0 },
+        { "node": "Email result", "type": "main", "index": 0 }
+      ]]
+    },
+    "Gemini 2.0 Flash": {
+      "ai_languageModel": [[{ "node": "Analyse with Gemini", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Structured Output": {
+      "ai_outputParser": [[{ "node": "Analyse with Gemini", "type": "ai_outputParser", "index": 0 }]]
+    }
+  }
+}
