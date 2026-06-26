@@ -1,11 +1,13 @@
 # Job-Hunt Copilot
 
-An [n8n](https://n8n.io) automation that reads a job posting, scores how well it
-fits my résumé using AI, and drafts a tailored cover-letter intro in my voice,
-then shows the result on screen, emails it, and logs every run to a tracker.
+An [n8n](https://n8n.io) automation that analyses a job posting against a
+candidate profile using AI and returns a structured fit assessment, a score
+backed by the matched strengths and gaps, delivered to a web view, email, and a
+Google Sheets tracker.
 
-Built as a personal project to take the repetition out of job hunting, and to
-show an AI-driven n8n workflow end to end.
+Built as a personal project to demonstrate an AI-driven n8n workflow end to end:
+a form trigger, structured LLM output, multi-channel delivery, and a calibrated,
+honest scoring prompt.
 
 ## How it works
 
@@ -22,10 +24,9 @@ show an AI-driven n8n workflow end to end.
         |--> [Append row]       one row per job in a Google Sheet (tracker)
 ```
 
-The prompt is deliberately tuned to score **strictly and honestly** and to write
-**without clichés or em dashes**. Real postings come back at scores like 25, 55,
-and 60 out of 100, not flattering nonsense, so the output is actually useful for
-deciding where to spend effort.
+The prompt is deliberately engineered to score **strictly and honestly**. Real
+postings come back at scores like 25, 55, and 60 out of 100 rather than inflated,
+so the assessment stays trustworthy and genuinely useful.
 
 ## Stack
 
